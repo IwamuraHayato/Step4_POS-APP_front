@@ -28,23 +28,13 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-<<<<<<< HEAD
-      
-=======
 
->>>>>>> 156aa94cd130d10b72bcd1d342ec9f631e7f192d
       - name: Copy artifact for deployment job
         run: |
           mkdir deploy
           cp -r ./.next/standalone/. ./deploy
-<<<<<<< HEAD
-          cp -r ./public ./deploy
-          cp -r ./.next/static/. ./deploy/.next/static
-          
-=======
           cp -r ./.next/static/. ./deploy/.next/static
 
->>>>>>> 156aa94cd130d10b72bcd1d342ec9f631e7f192d
       - name: Zip artifact for deployment
         run: zip release.zip ./deploy -r
 
