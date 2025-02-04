@@ -9,7 +9,7 @@ export default function Home() {
   const handlePostRequest = async () => {
     try{
       // const response = await fetch(`http://127.0.0.1:8000/api/read?itemCode=${itemCode}`, {
-      const response = await fetch(`${process.env.API_ENDPOINT}/api/read?itemCode=${itemCode}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/read?itemCode=${itemCode}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export default function Home() {
 
     try{
       // const response = await fetch(`http://127.0.0.1:8000/api/purchase`, {
-      const response = await fetch(`${process.env.API_ENDPOINT}/api/purchase`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/purchase`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
