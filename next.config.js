@@ -1,5 +1,6 @@
 require('dotenv').config()
 /** @type {import('next').NextConfig} */
+console.log("NEXT_PUBLIC_API_ENDPOINT:", process.env.NEXT_PUBLIC_API_ENDPOINT); 
 const nextConfig = {
     output: 'standalone',
     env: {
