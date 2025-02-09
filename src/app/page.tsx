@@ -108,7 +108,7 @@ export default function Home() {
     <div className="flex flex-col items-center bg-gray-200 min-h-screen p-8">
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-8">
         <h1 className="text-xl font-bold mb-4">コードをスキャンしてください。</h1>
-        <div className="h-screen flex flex-col items-center">
+        <div className="flex flex-col items-center">
           {isClient && (
             <Scanner 
               onScan={handleScan}
@@ -120,6 +120,13 @@ export default function Home() {
                 'code_128' // 一般的なバーコード
               ]}
               allowMultiple={true}
+              components={{
+                audio: true, // スキャン時に音を鳴らす (default: true)
+                onOff: true, // スキャンのオンオフを切り替えるボタンを表示する (default: false)
+                zoom: true, // ズーム機能を有効にする (default: false)
+                finder: false, // ファインダーを表示する (default: true)
+                torch: true, // フラッシュライトを有効にする (default: false)
+              }}
               />
           )}
         </div>
