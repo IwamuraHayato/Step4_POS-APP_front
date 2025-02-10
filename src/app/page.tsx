@@ -107,7 +107,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center bg-gray-200 min-h-screen p-8">
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-8">
-        <h1 className="text-xl font-bold mb-4">コードをスキャンしてください。</h1>
+        <h1 className="text-xl font-bold mb-4">コードをスキャンしてください！</h1>
         <div className="flex flex-col items-center">
           {isClient && (
             <Scanner 
