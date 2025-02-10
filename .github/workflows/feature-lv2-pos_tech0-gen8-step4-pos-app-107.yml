@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - tech0-gen8-step4-pos-app-1
 on:
   push:
     branches:
-      - main
+      - feature/lv2-pos
   workflow_dispatch:
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
+
       - name: Build project
         env:
           NEXT_PUBLIC_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_API_ENDPOINT }}
@@ -73,5 +73,5 @@ jobs:
         with:
           app-name: 'tech0-gen8-step4-pos-app-107'
           slot-name: 'Production'
-          package: ./deploy
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0DA85B7D1154471B817699BACA489217 }}
+          package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5DD6AF5D5424496A8E9CA24E88FBF339 }}
