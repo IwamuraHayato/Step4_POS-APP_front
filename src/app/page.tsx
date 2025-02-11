@@ -11,7 +11,7 @@ export default function Home() {
   const [itemCode, setItemCode] = useState<string>('');
   const [postResult, setPostResult] = useState<Item | null>(null);
   const [list, setList] = useState<Item[]>([]);
-  const [isClient,setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(true);
   const [scanResult, setScanResult] = useState({format: '', rawValue: ''});
   
   // const handlePostRequest = async () => {
@@ -77,7 +77,7 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {setIsClient(true);},[]);
+  // useEffect(() => {setIsClient(true);},[]);
 
   const handleScan = async(results: IDetectedBarcode[]) => {
     if (results.length > 0){
@@ -88,20 +88,54 @@ export default function Home() {
     }
     try{
       // const response = await fetch(`http://127.0.0.1:8000/api/read?itemCode=${itemCode}`, {
-      console.log({scanResult})
+      console.log(results[0])
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/read?itemCode=${results[0].rawValue}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       });
-    // console.log(`Request URL: http://127.0.0.1:8000/api/read?itemCode=${itemCode}`);
+    console.log(`Request URL: ${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/read?itemCode=${results[0].rawValue}`);
     const data: Item = await response.json();
     // console.log('Response Data:', data); 
     setPostResult(data);
     } catch (error) {
       console.error('Error:', error);
     }
+  };
+
+  // コード検出時のカスタムトラッカー
+  const customTracker = (
+    detectedCodes: IDetectedBarcode[],
+    ctx: CanvasRenderingContext2D
+  ) => {
+    detectedCodes.forEach((code) => {
+      // 検出されたコードの周りに赤い枠を描画
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(
+        code.boundingBox.x,
+        code.boundingBox.y,
+        code.boundingBox.width,
+        code.boundingBox.height
+      );
+
+      // コードの内容を表示
+      ctx.fillStyle = 'white';
+      ctx.fillRect(
+        code.boundingBox.x,
+        code.boundingBox.y + code.boundingBox.height,
+        code.boundingBox.width,
+        20
+      );
+      ctx.font = "16px Arial";
+      ctx.fillStyle = 'black';
+      ctx.fillText(
+        code.rawValue,
+        code.boundingBox.x + 5,
+        code.boundingBox.y + code.boundingBox.height + 15
+      );
+    });
   };
 
   return (
@@ -117,17 +151,19 @@ export default function Home() {
                 'ean_8',   // EAN-8
                 'upc_a',   // UPC-A
                 'upc_e',   // UPC-E
-                'code_128' // 一般的なバーコード
+                'code_128', // 一般的なバーコード
+                'code_39'
               ]}
               allowMultiple={true}
               components={{
+                tracker: customTracker,
                 audio: true, // スキャン時に音を鳴らす (default: true)
                 onOff: true, // スキャンのオンオフを切り替えるボタンを表示する (default: false)
                 zoom: true, // ズーム機能を有効にする (default: false)
-                finder: false, // ファインダーを表示する (default: true)
+                finder: true, // ファインダーを表示する (default: true)
                 torch: true, // フラッシュライトを有効にする (default: false)
               }}
-              />
+            />
           )}
         </div>
           {scanResult.rawValue && (
