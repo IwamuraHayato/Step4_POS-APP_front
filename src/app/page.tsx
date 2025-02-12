@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 type Item = {
   NAME: string;
   PRICE: number;
+  message: string;
 };
 
 export default function Home() {
@@ -33,12 +34,19 @@ export default function Home() {
   // };
   
   const addList = async () => {
-    if(postResult){
-      setList([...list, postResult]);
-      setPostResult(null);
-      setItemCode('');
+    if(!postResult){
+      alert('商品をスキャンしてください')
+      return;
     }
-  }
+    if (!postResult.NAME || isNaN(postResult.PRICE)){
+      alert('マスタ未登録のため追加できません。');
+      return;
+    }
+
+    setList([...list, postResult]);
+    setPostResult(null);
+    setScanResult({format: '', rawValue: ''});
+  };
 
   const handlePurchase = async () => {
     const totalAmount = list.reduce((sum, item) => sum + item.PRICE, 0);
@@ -97,7 +105,7 @@ export default function Home() {
       });
     console.log(`Request URL: ${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/read?itemCode=${results[0].rawValue}`);
     const data: Item = await response.json();
-    // console.log('Response Data:', data); 
+    console.log('Response Data:', data); 
     setPostResult(data);
     } catch (error) {
       console.error('Error:', error);
@@ -179,6 +187,7 @@ export default function Home() {
         <div className='bg-gray-100 h-20 mb-4'>
         {postResult && (
           <div className="mb-4 p-4 bg-gray-100 rounded">
+            <p className='text-red-600'>{postResult.message}</p>
             <p className="font-bold">{postResult.NAME}</p>
             <p>{postResult.PRICE}円</p>
           </div>
