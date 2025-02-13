@@ -12,27 +12,28 @@ export default function Home() {
   const [itemCode, setItemCode] = useState<string>('');
   const [postResult, setPostResult] = useState<Item | null>(null);
   const [list, setList] = useState<Item[]>([]);
-  const [isClient, setIsClient] = useState(true);
+  // const [isClient, setIsClient] = useState(true);
   const [scanResult, setScanResult] = useState({format: '', rawValue: ''});
+  const [isScan, setIsScan] = useState(false)
   
-  // const handlePostRequest = async () => {
-  //   try{
-  //     // const response = await fetch(`http://127.0.0.1:8000/api/read?itemCode=${itemCode}`, {
-  //     const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/read?itemCode=${itemCode}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     });
-  //   // console.log(`Request URL: http://127.0.0.1:8000/api/read?itemCode=${itemCode}`);
-  //   const data: Item = await response.json();
-  //   // console.log('Response Data:', data); 
-  //   setPostResult(data);
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
-  
+  const handlePostRequest = async () => {
+    try{
+      // const response = await fetch(`http://127.0.0.1:8000/api/read?itemCode=${itemCode}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/read?itemCode=${itemCode}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      });
+    // console.log(`Request URL: http://127.0.0.1:8000/api/read?itemCode=${itemCode}`);
+    const data: Item = await response.json();
+    // console.log('Response Data:', data); 
+    setPostResult(data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   const addList = async () => {
     if(!postResult){
       alert('商品をスキャンしてください')
@@ -149,9 +150,23 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center bg-gray-200 min-h-screen p-8">
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-8">
-        <h1 className="text-xl font-bold mb-4">コードをスキャンしてください！</h1>
+        <h2>SCAN もしくは商品コードを入力してください。</h2>
+        <div className="flex flex-col sm:flex-row gap-2 mb-6">
+          <input
+            type="number"
+            value={itemCode}
+            onChange={(e) => setItemCode(e.target.value)}
+            className="border-2 border-gray-300 rounded px-4 py-2 flex-1"
+          />
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            onClick={handlePostRequest}
+          >
+            商品コード 読込
+          </button>
+        </div>
         <div className="flex flex-col items-center">
-          {isClient && (
+          {isScan && (
             <Scanner 
               onScan={handleScan}
               formats={[
@@ -175,19 +190,14 @@ export default function Home() {
           )}
         </div>
           {scanResult.rawValue && (
-            <div className='mt-4 p-2 border border-gray-300 rounded'>
-            <p>
-              <strong>フォーマット:</strong> {scanResult.format}
-            </p>
-            <p>
-              <strong>内容:</strong> {scanResult.rawValue}
-            </p>
-          </div>
+            <div className='mt-4 p-2'>
+            </div>
           )}
         <div className='bg-gray-100 h-20 mb-4'>
         {postResult && (
           <div className="mb-4 p-4 bg-gray-100 rounded">
             <p className='text-red-600'>{postResult.message}</p>
+            <p>{scanResult.rawValue}</p>
             <p className="font-bold">{postResult.NAME}</p>
             <p>{postResult.PRICE}円</p>
           </div>
@@ -220,6 +230,24 @@ export default function Home() {
           </button>
         </div>
       </div>
+      <div className="btm-nav">
+      {!isScan && (
+          <button 
+              className="active border-blue-600 bg-blue-200 text-blue-600"
+              onClick={() => setIsScan(true)}
+              >
+              <span className="btm-nav-label">SCAN 開始</span>
+          </button>
+      )}
+      {isScan && (
+          <button 
+              className="active border-blue-600 bg-blue-200 text-red-900"
+              onClick={() => setIsScan(false)}
+              >
+              <span className="btm-nav-label">SCAN 停止</span>
+          </button>
+      )}
+    </div>
     </div>
   );
 }
